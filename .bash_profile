@@ -1,13 +1,19 @@
 #!/usr/bin/env bash
 
-. ~/.secret_pars # contains variables I would rather not share openly here, e.g., project name MY_PROJECT
+. ~/.secret_pars # contains variables I would rather not share openly here, e.g., the project name MY_PROJECT
 
+# simple everyday aliases
+alias la='ls -a'
+
+# location shortcuts
 alias cdp='cd /cfs/klemming/projects/snic/${MY_PROJECT}/$USER'
 alias cds='cd /cfs/klemming/scratch/${USER:0:1}/$USER'
 
 # slurm commands
+# show the current user's slurm queue
 alias sq='squeue -u $USER'
-sl () { # quick view of the slurm output
+# show final lines of the slurm output files in the current directory
+sl () {
     # parse arguments
     declare -i tail_lines=25 # number of tail lines to display
     declare -i file_from_last=0 # will read nth file from the most recent
@@ -35,5 +41,3 @@ sl () { # quick view of the slurm output
         less filename | ${view_command} -n ${tail_lines}
     fi
 }
-
-sl
