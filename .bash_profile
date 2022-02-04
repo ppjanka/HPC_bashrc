@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo "Processing bash_profile.."
+
 . ~/.secret_pars # contains variables I would rather not share openly here, e.g., the project name MY_PROJECT
 
 # simple everyday aliases
@@ -41,3 +43,21 @@ sl () {
         less filename | ${view_command} -n ${tail_lines}
     fi
 }
+
+# start the SSH agent and prompt user to provide the passphrase to the Git key
+start_ssh () {
+    eval $(ssh-agent -s)
+    declare -a keys_to_load=($@)
+    for key in keys_to_load; do
+        local passphrase
+        read -sp "Please provide passphrase for the SSH key \"${key}\".. " passphrase
+        if [ -n passphrase ]; then # if not empty
+            ssh-add key -p $passphrase
+        else
+            echo " - ssh-key \"${key}\" init aborted."
+        fi
+    done
+}
+ls -I '*.pub' -I 'known_hosts' -I 'config' ~/.ssh/ | start_ssh
+
+echo "bash_profile processing done."
