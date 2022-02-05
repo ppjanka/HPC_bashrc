@@ -63,12 +63,12 @@ start_ssh () {
         local passphrase
         read -sp "Please provide passphrase for the SSH key \"${key}\".. " passphrase
         if [ -n passphrase ]; then # if not empty
-            echo $passphrase | openssl rsa -in $key -passin stdin | ssh-add -
+            echo "$passphrase" | openssl rsa -in $key -passin stdin | ssh-add -
         else
             echo " - ssh-key \"${key}\" init aborted."
         fi
     done
 }
-ls -I '*.pub' -I 'known_hosts' -I 'config' ~/.ssh/*rsa* | start_ssh
+ls ~/.ssh/*rsa* | grep -v '.pub' | start_ssh
 
 echo "bash_profile processing done."
