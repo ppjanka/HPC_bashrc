@@ -42,7 +42,7 @@ sl () {
         done
     fi
     # search for the desired .slurm file
-    declare -a filenames=($(ls ${sort_arg} *.slurm))
+    declare -a filenames=($(ls ${sort_arg} *.slurm 2> /dev/null))
     if [ ${#filenames[@]} -eq 0 ]; then
         echo "[$FUNCNAME] No .slurm files available."
     elif [ ${#filenames[@]} -lt ${file_from_last} ]; then
@@ -67,6 +67,6 @@ start_ssh () {
         }
     done
 }
-start_ssh $(ls ~/.ssh/*rsa* | grep -v '.pub')
+start_ssh $(ls ~/.ssh/*rsa* 2> /dev/null | grep -v '.pub')
 
 echo "bash_profile processing done."
