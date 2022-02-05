@@ -6,6 +6,7 @@ echo "Processing bash_profile.."
 
 # simple everyday aliases
 alias la='ls -a'
+alias ghis='history | grep'
 
 # location shortcuts
 alias cdp='cd /cfs/klemming/projects/snic/${MY_PROJECT}/$USER'
