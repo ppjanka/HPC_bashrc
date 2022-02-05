@@ -58,7 +58,9 @@ sl () {
 #  - note: only processes RSA keys here (easy to adjust if you need other algorithms)
 start_ssh () {
     eval $(ssh-agent -s)
-    declare -a keys_to_load=($@)
+    declare -a keys_to_load=("$@")
+    echo "$@"
+    echo ${keys_to_load[@]}
     for key in ${keys_to_load[@]}; do
         local passphrase
         read -sp "Please provide passphrase for the SSH key \"${key}\".. " passphrase
@@ -69,6 +71,6 @@ start_ssh () {
         fi
     done
 }
-ls ~/.ssh/*rsa* | grep -v '.pub' | start_ssh
+start_ssh $(ls ~/.ssh/*rsa* | grep -v '.pub')
 
 echo "bash_profile processing done."
