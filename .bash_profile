@@ -2,7 +2,7 @@
 
 echo "Processing bash_profile.."
 
-. ~/.secret_pars # contains variables I would rather not share openly here, e.g., the project name MY_PROJECT
+. ~/.secret_pars # defines variables that should not be shared openly here, e.g., the project name MY_PROJECT
 
 # simple everyday aliases
 alias la='ls -a'
@@ -10,6 +10,15 @@ alias la='ls -a'
 # location shortcuts
 alias cdp='cd /cfs/klemming/projects/snic/${MY_PROJECT}/$USER'
 alias cds='cd /cfs/klemming/scratch/${USER:0:1}/$USER'
+
+# check available quota
+checkquota () {
+    echo -e "\nProject quota for ${MY_PROJECT}:"
+    lfs quota -hp `stat -c "%g" /cfs/klemming/projects/snic/${MY_PROJECT}` /cfs/klemming
+    echo -e "\nUser quota for ${USER} (id $UID):"
+    lfs quota -hp $UID /cfs/klemming
+    echo
+}
 
 # slurm commands
 # show the current user's slurm queue
@@ -58,6 +67,6 @@ start_ssh () {
         fi
     done
 }
-ls -I '*.pub' -I 'known_hosts' -I 'config' ~/.ssh/ | start_ssh
+ls -I '*.pub' -I 'known_hosts' -I 'config' ~/.ssh/* | start_ssh
 
 echo "bash_profile processing done."
