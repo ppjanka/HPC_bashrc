@@ -36,16 +36,14 @@ sl () {
     declare -i file_from_last=0 # will read nth file from the most recent
     local sort_arg='-t' # arguments to be passed to ls *.slurm
     local view_command='tail'
-    if [ $# -gt 0 ]; then
-        for (( i=1; i<=$#; i++ )); do
-            case ${!i} in
-                '-n') tail_lines=${!$((i+1))}; ((i++));;
-                '-nf') file_from_last=${!$((i+1))}; ((i++));;
-                '-h') view_command='head';;
-                *) echo "[$FUNCNAME] Command line option unrecognised: \"${!i}\", ignored."
-            esac
-        done
-    fi
+    for (( i=1; i<=$#; i++ )); do
+        case ${!i} in
+            '-n') tail_lines=${!$((i+1))}; ((i++));;
+            '-nf') file_from_last=${!$((i+1))}; ((i++));;
+            '-h') view_command='head';;
+            *) echo "[$FUNCNAME] Command line option unrecognised: \"${!i}\", ignored."
+        esac
+    done
     # search for the desired .slurm file
     declare -a filenames=($(ls ${sort_arg} *.slurm 2> /dev/null))
     if [ ${#filenames[@]} -eq 0 ]; then
@@ -63,8 +61,7 @@ sl () {
 #  - note: only processes RSA keys here (easy to adjust if you need other algorithms)
 start_ssh () {
     eval $(ssh-agent -s)
-    declare -a keys_to_load=("$@")
-    for key in ${keys_to_load[@]}; do
+    for key in $@; do
         { # try: prompt user for passphrase
             ssh-add $key
             # clean the clipboard to avoid re-pasting the passphrase by mistake
