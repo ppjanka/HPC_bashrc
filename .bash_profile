@@ -54,7 +54,8 @@ sl () {
     fi
 }
 
-# start the SSH agent and prompt user to provide the passphrase to the Git key
+# Start the SSH agent and prompt user to provide the passphrase to the Git key
+#  - note: only processes RSA keys here (easy to adjust if you need other algorithms)
 start_ssh () {
     eval $(ssh-agent -s)
     declare -a keys_to_load=($@)
@@ -62,12 +63,12 @@ start_ssh () {
         local passphrase
         read -sp "Please provide passphrase for the SSH key \"${key}\".. " passphrase
         if [ -n passphrase ]; then # if not empty
-            ssh-add key -p $passphrase
+            echo $passphrase | openssl rsa -in $key -passin stdin | ssh-add -
         else
             echo " - ssh-key \"${key}\" init aborted."
         fi
     done
 }
-ls -I '*.pub' -I 'known_hosts' -I 'config' ~/.ssh/* | start_ssh
+ls -I '*.pub' -I 'known_hosts' -I 'config' ~/.ssh/*rsa* | start_ssh
 
 echo "bash_profile processing done."
