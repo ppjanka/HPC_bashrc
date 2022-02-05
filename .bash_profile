@@ -59,16 +59,12 @@ sl () {
 start_ssh () {
     eval $(ssh-agent -s)
     declare -a keys_to_load=("$@")
-    echo "$@"
-    echo ${keys_to_load[@]}
     for key in ${keys_to_load[@]}; do
-        local passphrase
-        read -sp "Please provide passphrase for the SSH key \"${key}\".. " passphrase
-        if [ -n passphrase ]; then # if not empty
-            echo "$passphrase" | openssl rsa -in $key -passin stdin | ssh-add -
-        else
+        { # try: prompt user for passphrase
+            ssh-add $key
+        } || { # catch: aborted
             echo " - ssh-key \"${key}\" init aborted."
-        fi
+        }
     done
 }
 start_ssh $(ls ~/.ssh/*rsa* | grep -v '.pub')
