@@ -59,7 +59,7 @@ sl () {
 start_ssh () {
     eval $(ssh-agent -s)
     declare -a keys_to_load=($@)
-    for key in keys_to_load; do
+    for key in ${keys_to_load[@]}; do
         local passphrase
         read -sp "Please provide passphrase for the SSH key \"${key}\".. " passphrase
         if [ -n passphrase ]; then # if not empty
