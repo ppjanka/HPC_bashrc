@@ -63,6 +63,8 @@ start_ssh () {
     for key in ${keys_to_load[@]}; do
         { # try: prompt user for passphrase
             ssh-add $key
+            # clean the clipboard to avoid re-pasting the passphrase by mistake
+            #echo | xclip -selection c # no xclip on Dardel
         } || { # catch: aborted
             echo " - ssh-key \"${key}\" init aborted."
         }
