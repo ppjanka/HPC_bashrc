@@ -10,6 +10,7 @@ alias la='ls -a'
 # location shortcuts
 alias cdp='cd /cfs/klemming/projects/snic/${MY_PROJECT}/$USER'
 alias cds='cd /cfs/klemming/scratch/${USER:0:1}/$USER'
+alias cdn='cd /cfs/klemming/nobackup/${USER:0:1}/$USER'
 
 # check available quota
 checkquota () {
