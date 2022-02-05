@@ -33,7 +33,7 @@ sl () {
     local view_command='tail'
     if [ $# -gt 0 ]; then
         for (( i=1; i<=$#; i++ )); do
-            case ${!i}
+            case ${!i} in
                 '-n') tail_lines=${!$((i+1))}; ((i++));;
                 '-nf') file_from_last=${!$((i+1))}; ((i++));;
                 '-h') view_command='head';;
@@ -45,7 +45,7 @@ sl () {
     declare -a filenames=($(ls ${sort_arg} *.slurm))
     if [ ${#filenames[@]} -eq 0 ]; then
         echo "[$FUNCNAME] No .slurm files available."
-    elif [ ${#filenames[@]} -lt ${file_from_last} ]
+    elif [ ${#filenames[@]} -lt ${file_from_last} ]; then
         echo "[$FUNCNAME] Not enough .slurm files to satisfy the -n parameter (no. of file from last)."
     else
         local filename=${filenames[${#filenames[@]}-${file_from_last}]}
