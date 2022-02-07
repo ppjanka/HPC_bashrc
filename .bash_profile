@@ -5,7 +5,9 @@ echo "Processing bash_profile.."
 . ~/.secret_pars # defines variables that should not be shared openly here, e.g., the project name MY_PROJECT
 
 # simple everyday aliases
+alias ls='ls --color'
 alias la='ls -a'
+alias ll='ls -l'
 ghis () {
     local pattern=$(printf '|%s' $@)
     pattern=${pattern:1}
