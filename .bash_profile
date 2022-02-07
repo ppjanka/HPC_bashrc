@@ -38,8 +38,8 @@ sl () {
     local view_command='tail'
     for (( i=1; i<=$#; i++ )); do
         case ${!i} in
-            '-n') tail_lines=${!$((i+1))}; ((i++));;
-            '-nf') file_from_last=${!$((i+1))}; ((i++));;
+            '-n') tail_lines=${@:$((i+1)):1}; ((i++));;
+            '-nf') file_from_last=${@:$((i+1)):1}; ((i++));;
             '-h') view_command='head';;
             *) echo "[$FUNCNAME] Command line option unrecognised: \"${!i}\", ignored."
         esac
