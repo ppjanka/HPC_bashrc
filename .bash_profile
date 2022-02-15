@@ -62,9 +62,11 @@ sl () {
 sf () {
     # parse arguments
     declare -i file_from_last=0 # will read nth file from the most recent
+    declare show_sacct=false # show additional data while job is running
     for (( i=1; i<=$#; i++ )); do
         case ${!i} in
             '-nf') file_from_last=${@:$((i+1)):1}; ((i++));;
+            '-a') show_sacct=true;;
             *) echo "[$FUNCNAME] Command line option unrecognised: \"${!i}\", ignored."
         esac
     done
@@ -80,6 +82,9 @@ sf () {
         jobid=${jobid:6}
         # print out the desired output
         seff $jobid
+        if [ $show_sacct ]; then
+            scontrol show jobid -dd $jobid
+        fi
     fi
 }
 
