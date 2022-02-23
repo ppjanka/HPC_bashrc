@@ -2,6 +2,16 @@
 
 echo "Processing bash_profile.."
 
+# find which machine we are running on
+if [ "${HOSTNAME::3}" == 'uan' ]; then
+    machine='dardel'
+elif [ "${HOSTNAME::9}" == 'tetralith' ]; then
+    machine='tetralith'
+else
+    machine='unknown'
+fi
+echo " - running on machine: $machine"
+
 . ~/.secret_pars # defines variables that should not be shared openly here, e.g., the project name MY_PROJECT
 
 # simple everyday aliases
@@ -15,18 +25,25 @@ ghis () {
 }
 
 # location shortcuts
-alias cdp='cd /cfs/klemming/projects/snic/${MY_PROJECT}/$USER'
-alias cds='cd /cfs/klemming/scratch/${USER:0:1}/$USER'
-alias cdn='cd /cfs/klemming/nobackup/${USER:0:1}/$USER'
+case $machine in
+    'dardel')    alias cdp='cd /cfs/klemming/projects/snic/${MY_PROJECT}/$USER'; \
+                 alias cds='cd /cfs/klemming/scratch/${USER:0:1}/$USER'; \
+                 alias cdn='cd /cfs/klemming/nobackup/${USER:0:1}/$USER';;
+    'tetralith') alias cdp='cd /proj/${MY_PROJECT}/users/$USER';;
+esac
 
 # check available quota
-checkquota () {
-    echo -e "\nProject quota for ${MY_PROJECT}:"
-    lfs quota -hp `stat -c "%g" /cfs/klemming/projects/snic/${MY_PROJECT}` /cfs/klemming
-    echo -e "\nUser quota for ${USER} (id $UID):"
-    lfs quota -hp $UID /cfs/klemming
-    echo
-}
+if [ $machine == 'dardel' ]; then
+    checkquota () {
+        echo -e "\nProject quota for ${MY_PROJECT}:"
+        lfs quota -hp `stat -c "%g" /cfs/klemming/projects/snic/${MY_PROJECT}` /cfs/klemming
+        echo -e "\nUser quota for ${USER} (id $UID):"
+        lfs quota -hp $UID /cfs/klemming
+        echo
+    }
+elif [ $machine == 'tetralith' ]; then
+    alias checkquota='snicquota'
+fi
 
 # slurm commands
 # show the current user's slurm queue
